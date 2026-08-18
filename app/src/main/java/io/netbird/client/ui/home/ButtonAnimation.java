@@ -1,182 +1,89 @@
 package io.netbird.client.ui.home;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieDrawable;
-
+/**
+ * Lightweight native connection-state presenter for GoreeCloud Network.
+ *
+ * The upstream Android client used a Lottie animation as both the primary
+ * connection control and its state machine. GoreeCloud keeps the networking
+ * callbacks but presents them with ordinary Android widgets so the core
+ * connect/disconnect experience does not depend on a third-party animation
+ * runtime or bundled animation assets.
+ */
 class ButtonAnimation {
-    private LottieAnimationView btn;
+    private Button button;
     private TextView textConnStatus;
 
     private enum AnimationState {
-        DISCONNECTED("Disconnected"),
-        CONNECTING("Connecting"),
-        CONNECTED("Connected"),
-        DISCONNECTING("Disconnecting");
+        DISCONNECTED("Disconnected", "Connect", true, 1.0f),
+        CONNECTING("Connecting…", "Connecting…", false, 0.72f),
+        CONNECTED("Connected", "Disconnect", true, 1.0f),
+        DISCONNECTING("Disconnecting…", "Disconnecting…", false, 0.72f);
 
-        private final String text;
-        AnimationState(String text) { this.text = text; }
+        private final String statusText;
+        private final String buttonText;
+        private final boolean enabled;
+        private final float alpha;
+
+        AnimationState(String statusText, String buttonText, boolean enabled, float alpha) {
+            this.statusText = statusText;
+            this.buttonText = buttonText;
+            this.enabled = enabled;
+            this.alpha = alpha;
+        }
     }
 
     private AnimationState currentState = AnimationState.DISCONNECTED;
 
-    // Frame ranges
-    private static final int CONNECTING_START = 78, CONNECTING_END = 120;
-    private static final int CONNECTING_FADE_OUT_START = 121, CONNECTING_FADE_OUT_END = 142;
-    private static final int DISCONNECTING_FADE_IN_START = 152, DISCONNECTING_FADE_IN_END = 214;
-    private static final int DISCONNECTING_LOOP_START = 215, DISCONNECTING_LOOP_END = 258;
-    private static final int DISCONNECTING_FADE_OUT_START = 259, DISCONNECTING_FADE_OUT_END = 339;
-
-
-    public ButtonAnimation() {
-    }
-
-    public void refresh(LottieAnimationView buttonConnect, TextView textConnStatus) {
-        Log.i("ButtonAnimation", "refresh: "+currentState);
-        btn = buttonConnect;
+    public void refresh(Button buttonConnect, TextView textConnStatus) {
+        button = buttonConnect;
         this.textConnStatus = textConnStatus;
-        updateText(currentState.text);
-
-        switch (currentState) {
-            case DISCONNECTED:
-                btn.setRepeatCount(0);
-                btn.setMinAndMaxFrame(DISCONNECTING_FADE_OUT_END, DISCONNECTING_FADE_OUT_END);
-                btn.playAnimation();
-                break;
-
-            case CONNECTING:
-                btn.setRepeatCount(LottieDrawable.INFINITE);
-                btn.setMinAndMaxFrame(CONNECTING_START, CONNECTING_END);
-                btn.playAnimation();
-                break;
-
-            case CONNECTED:
-                btn.setRepeatCount(0);
-                btn.setMinAndMaxFrame(CONNECTING_FADE_OUT_END, CONNECTING_FADE_OUT_END);
-                btn.playAnimation();
-                break;
-
-            case DISCONNECTING:
-                btn.setRepeatCount(LottieDrawable.INFINITE);
-                btn.setMinAndMaxFrame(DISCONNECTING_LOOP_START, DISCONNECTING_LOOP_END);
-                btn.playAnimation();
-                break;
-        }
+        render(currentState);
     }
 
     public void destroy() {
-        Log.d("ButtonAnimation", currentState+" -> destroy ");
-        btn.cancelAnimation();
-        btn.removeAllAnimatorListeners();
-        btn.setImageDrawable(null);
+        button = null;
+        textConnStatus = null;
     }
 
     public void connecting() {
-        Log.d("ButtonAnimation", currentState+" -> connecting ");
-        if (currentState == AnimationState.CONNECTING)
-            return;
-
-        // Go send invalid connecting state for a moment
-        if (currentState == AnimationState.DISCONNECTING)
-            return;
-
+        if (currentState == AnimationState.DISCONNECTING) return;
         currentState = AnimationState.CONNECTING;
-        updateText(AnimationState.CONNECTING.text);
-
-        btn.removeAllAnimatorListeners();
-        btn.setMinAndMaxFrame(CONNECTING_START, CONNECTING_END);
-        btn.setRepeatCount(LottieDrawable.INFINITE);
-        btn.playAnimation();
+        render(currentState);
     }
 
     public void connected() {
-        Log.d("ButtonAnimation", currentState+" -> connected ");
-        if (currentState == AnimationState.CONNECTED) return;
-
-        updateText(AnimationState.CONNECTED.text);
-
-        btn.removeAllAnimatorListeners();
-
-        if (!btn.isAnimating()) {
-            // when we switch the fragment and the animation is not running
-            currentState = AnimationState.CONNECTED;
-            btn.setMinAndMaxFrame(CONNECTING_FADE_OUT_END, CONNECTING_FADE_OUT_END);
-            btn.setRepeatCount(0);
-            btn.playAnimation();
-        } else {
-            // Wait for current animation to end, then start the connected animation
-            btn.setRepeatCount(0);
-            btn.addAnimatorListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    btn.removeAnimatorListener(this);
-                    currentState = AnimationState.CONNECTED;
-                    btn.setMinAndMaxFrame(CONNECTING_FADE_OUT_START, CONNECTING_FADE_OUT_END);
-                    btn.setRepeatCount(0);
-                    btn.playAnimation();
-                }
-            });
-        }
+        currentState = AnimationState.CONNECTED;
+        render(currentState);
     }
 
     public void disconnecting() {
-        Log.d("ButtonAnimation", currentState+" -> disconnecting ");
-        if (currentState == AnimationState.DISCONNECTING) return;
-
         currentState = AnimationState.DISCONNECTING;
-        updateText(AnimationState.DISCONNECTING.text);
-
-        btn.removeAllAnimatorListeners();
-        btn.setRepeatCount(0);
-        btn.setMinAndMaxFrame(DISCONNECTING_FADE_IN_START, DISCONNECTING_FADE_IN_END);
-        btn.addAnimatorListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                btn.removeAnimatorListener(this);
-                btn.setMinAndMaxFrame(DISCONNECTING_LOOP_START, DISCONNECTING_LOOP_END);
-                btn.setRepeatCount(LottieDrawable.INFINITE);
-                btn.playAnimation();
-            }
-        });
-
-        btn.playAnimation();
+        render(currentState);
     }
 
     public void disconnected() {
-        Log.d("ButtonAnimation", currentState+" -> disconnected ");
-        if (currentState == AnimationState.DISCONNECTED)
-            return;
-
-        updateText(AnimationState.DISCONNECTED.text);
-
-        btn.removeAllAnimatorListeners();
-        if(currentState == AnimationState.CONNECTING) {
-            currentState = AnimationState.DISCONNECTED;
-            btn.setRepeatCount(0);
-            btn.setMinAndMaxFrame(DISCONNECTING_FADE_OUT_END, DISCONNECTING_FADE_OUT_END);
-            btn.playAnimation();
-            return;
-        }
-
         currentState = AnimationState.DISCONNECTED;
-        btn.setRepeatCount(0);
-        btn.addAnimatorListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                btn.removeAllAnimatorListeners();
-                btn.setRepeatCount(0);
-                btn.setMinAndMaxFrame(DISCONNECTING_FADE_OUT_START, DISCONNECTING_FADE_OUT_END);
-                btn.playAnimation();
-            }
-        });
+        render(currentState);
     }
 
-    private void updateText(String text) {
-        Log.i("ButtonAnimation", "set text: "+text);
-        textConnStatus.post(() -> textConnStatus.setText(text));
+    private void render(AnimationState state) {
+        if (button != null) {
+            button.post(() -> {
+                if (button == null) return;
+                button.setText(state.buttonText);
+                button.setEnabled(state.enabled);
+                button.setAlpha(state.alpha);
+            });
+        }
+        if (textConnStatus != null) {
+            textConnStatus.post(() -> {
+                if (textConnStatus != null) {
+                    textConnStatus.setText(state.statusText);
+                }
+            });
+        }
     }
 }

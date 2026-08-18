@@ -6,199 +6,169 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/nb_bg_home"
-    android:descendantFocusability="afterDescendants"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="20dp"
     tools:context=".ui.home.HomeFragment">
 
-    <Space
-        android:id="@+id/spacer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:layout_constraintTop_toTopOf="@id/top_guideline"
-        app:layout_constraintBottom_toTopOf="@id/barrier_below_bg_mask_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.412" />
-
-    <View
-        android:id="@+id/mask_background"
+    <TextView
+        android:id="@+id/product_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/nb_bg_mask"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:layout_constraintTop_toTopOf="@id/spacer"
+        android:text="GOREECLOUD NETWORK"
+        android:textColor="#7DD3FC"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.79" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_below_bg_mask_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="bg_mask_container" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bg_mask_container"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:layout_constraintTop_toTopOf="@id/top_guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/bg_mask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/main_desc_bg_mask"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:scaleType="fitCenter"
-            android:src="@drawable/bg_bottom"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/btn_connect"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:background="@drawable/focus_highlight"
-            android:clickable="true"
-            android:contentDescription="@string/main_desc_connect"
-            android:focusable="true"
-            android:focusableInTouchMode="false"
-            android:scaleType="fitCenter"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.07"
-            app:layout_constraintWidth_percent="0.79" />
-
-        <TextView
-            android:id="@+id/text_connection_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:text="@string/main_status_disconnected"
-            android:textAlignment="center"
-            android:textColor="@color/nb_txt_light"
-            android:textSize="22sp"
-            app:layout_constraintTop_toBottomOf="@id/btn_connect"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:id="@+id/white_background"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/nb_bg_mask"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:layout_constraintTop_toBottomOf="@id/bg_mask_container"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/bg_mask_container"
-        app:layout_constraintEnd_toEndOf="@id/bg_mask_container" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_hostname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textAlignment="center"
-        android:textColor="@color/nb_txt_light"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="budafoki.netbird.cloud" />
-
-    <TextView
-        android:id="@+id/text_network_address"
+        android:id="@+id/text_connection_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textAlignment="center"
+        android:text="@string/main_status_disconnected"
         android:textColor="@color/nb_txt_light"
-        android:textSize="16sp"
-        tools:text="100.127.123.95/16"
-        app:layout_constraintTop_toBottomOf="@id/text_hostname"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/product_label" />
+
+    <LinearLayout
+        android:id="@+id/device_surface"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gc_glaze_surface"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_connection_status">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device"
+            android:textColor="#94A3B8"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_hostname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#F8FAFC"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="personal-phone-android-01" />
+
+        <TextView
+            android:id="@+id/text_network_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#94A3B8"
+            android:textSize="14sp"
+            tools:text="100.71.27.120/16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/focus_highlight"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="6dp"
+            android:text="Wardveil Security · Protected"
+            android:textColor="#A7F3D0"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gc_connect_button"
+        android:contentDescription="@string/main_desc_connect"
+        android:fontFamily="sans-serif-medium"
+        android:text="Connect"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_surface" />
 
     <FrameLayout
         android:id="@+id/peers_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/shadow"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:focusable="true"
-        android:focusableInTouchMode="false"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/gc_glaze_surface"
         android:clickable="true"
+        android:elevation="2dp"
+        android:focusable="true"
         android:foreground="@drawable/focus_highlight"
-        app:layout_constraintWidth_max="600dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/btn_connect">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:focusable="false"
-            android:focusableInTouchMode="false">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <View
-                android:layout_width="110dp"
-                android:layout_height="5dp"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/separator"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Devices"
+                    android:textColor="#F8FAFC"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="View private-network peers and resources"
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/text_open_panel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:padding="16dp"
-                android:textAlignment="center"
-                android:textColor="@color/nb_txt_light"
-                android:textSize="16sp"
-                tools:text="0 of 0 Peers connected" />
+                android:paddingStart="12dp"
+                android:textColor="#7DD3FC"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="3 of 4 connected" />
         </LinearLayout>
-
     </FrameLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.18019079" />
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/peers_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

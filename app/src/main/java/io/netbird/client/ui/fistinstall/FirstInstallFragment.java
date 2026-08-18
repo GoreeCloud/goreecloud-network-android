@@ -44,17 +44,17 @@ public class FirstInstallFragment extends Fragment {
 
         binding.btnContinue.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-            navController.popBackStack(); // or navigate somewhere
+            navController.popBackStack();
         });
 
         String fullText = getString(R.string.fragment_firstinstall_txt);
-        String clickableWord = "change_server"; // from string
+        String clickableText = "Change Server";
 
         SpannableString spannable = new SpannableString(fullText);
-        int startIndex = fullText.indexOf(clickableWord);
-        int endIndex = startIndex + clickableWord.length();
+        int startIndex = fullText.indexOf(clickableText);
 
         if (startIndex != -1) {
+            int endIndex = startIndex + clickableText.length();
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {

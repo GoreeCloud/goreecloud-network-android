@@ -76,7 +76,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.uiautomator)
     androidTestImplementation(libs.test.rules)
-    implementation(libs.browser)  // Added for CustomTabsIntent
-    implementation(libs.lottie)
+    implementation(libs.browser)
     implementation(libs.zxing)
 }

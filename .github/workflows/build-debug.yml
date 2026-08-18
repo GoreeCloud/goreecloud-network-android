@@ -63,7 +63,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "17"
-          distribution: "adopt"
+          distribution: "temurin"
           cache: "gradle"
 
       - name: Download AAR artifact
@@ -98,7 +98,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "17"
-          distribution: "adopt"
+          distribution: "temurin"
           cache: "gradle"
 
       - name: Download AAR artifact

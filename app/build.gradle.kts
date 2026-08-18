@@ -1,12 +1,5 @@
-val hasGoogleServicesJson = rootProject.file("app/google-services.json").exists()
-
 plugins {
     alias(libs.plugins.android.application)
-}
-
-if (hasGoogleServicesJson) {
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
 }
 
 fun getPropertyOrEnv(propertyName: String, envName: String = propertyName): String? {
@@ -86,10 +79,4 @@ dependencies {
     implementation(libs.browser)  // Added for CustomTabsIntent
     implementation(libs.lottie)
     implementation(libs.zxing)
-
-    if (hasGoogleServicesJson) {
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.crashlytics)
-        implementation(libs.firebase.analytics)
-    }
 }

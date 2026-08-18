@@ -81,15 +81,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/focus_highlight"
-            android:paddingStart="10dp"
-            android:paddingTop="6dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="6dp"
-            android:text="Wardveil Security · Protected"
+            android:paddingTop="4dp"
+            android:text="Wardveil Security"
             android:textColor="#A7F3D0"
             android:textSize="12sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Security status integration in development"
+            android:textColor="#94A3B8"
+            android:textSize="11sp" />
     </LinearLayout>
 
     <Button

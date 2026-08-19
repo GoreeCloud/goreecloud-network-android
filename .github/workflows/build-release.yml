@@ -25,10 +25,27 @@ jobs:
       apk_path: ${{ steps.build.outputs.apk_path }}
       bundle_path: ${{ steps.build.outputs.bundle_path }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact release tag
+        uses: actions/checkout@v5
         with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact release revision
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag_name='${{ github.event.release.tag_name }}'
+          expected_sha="$(git rev-list -n 1 "$tag_name")"
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$expected_sha" ]]; then
+            echo "Release tag $tag_name resolves to $expected_sha but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "source_sha=$actual_sha" >> "$GITHUB_OUTPUT"
+          echo "Verified release tag $tag_name at exact source revision $actual_sha"
 
       - name: Get version
         id: version
@@ -85,10 +102,23 @@ jobs:
           unzip -t "${{ steps.build.outputs.bundle_path }}"
           sha256sum "${{ steps.build.outputs.bundle_path }}"
 
+      - name: Write release provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "GOREECLOUD_NETWORK_RELEASE_TAG=${{ github.event.release.tag_name }}"
+            echo "GOREECLOUD_NETWORK_SOURCE_SHA=${{ steps.source.outputs.source_sha }}"
+            echo "GOREECLOUD_NETWORK_VERSION_CODE=${{ steps.version_code.outputs.version_code }}"
+            sha256sum "${{ steps.build.outputs.apk_path }}"
+            sha256sum "${{ steps.build.outputs.bundle_path }}"
+          } > goreecloud-network-release-provenance.txt
+
       - name: Upload files to existing release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ${{ steps.build.outputs.apk_path }}
             ${{ steps.build.outputs.bundle_path }}
+            goreecloud-network-release-provenance.txt
           tag_name: ${{ github.event.release.tag_name }}

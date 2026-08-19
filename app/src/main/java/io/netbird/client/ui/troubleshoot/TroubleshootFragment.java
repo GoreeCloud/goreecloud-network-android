@@ -39,17 +39,9 @@ public class TroubleshootFragment extends Fragment {
             }
         });
 
-        binding.traceLogLayout.setOnClickListener(v -> {
-            binding.switchTraceLog.toggle();
-        });
-
-        binding.anonymizeLayout.setOnClickListener(v -> {
-            binding.switchAnonymize.toggle();
-        });
-
-        binding.buttonDebugBundle.setOnClickListener(v -> {
-            generateDebugBundle();
-        });
+        binding.traceLogLayout.setOnClickListener(v -> binding.switchTraceLog.toggle());
+        binding.anonymizeLayout.setOnClickListener(v -> binding.switchAnonymize.toggle());
+        binding.buttonDebugBundle.setOnClickListener(v -> generateDebugBundle());
 
         return binding.getRoot();
     }
@@ -62,7 +54,7 @@ public class TroubleshootFragment extends Fragment {
 
     private void generateDebugBundle() {
         Activity activity = getActivity();
-        if (activity == null || !(activity instanceof ServiceAccessor)) {
+        if (activity == null || !(activity instanceof ServiceAccessor) || binding == null) {
             return;
         }
 
@@ -75,16 +67,28 @@ public class TroubleshootFragment extends Fragment {
                     if (binding == null || !isAdded()) return;
                     binding.buttonDebugBundle.setEnabled(true);
                     ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Debug bundle key", key);
+                    ClipData clip = ClipData.newPlainText(
+                            getString(R.string.troubleshoot_debug_bundle_key_clipboard_label),
+                            key
+                    );
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(activity, "Debug bundle key copied to clipboard", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            activity,
+                            R.string.troubleshoot_debug_bundle_key_copied,
+                            Toast.LENGTH_SHORT
+                    ).show();
                 });
             } catch (Exception e) {
-                Log.e(LOGTAG, "failed to create debug bundle", e);
+                Log.e(LOGTAG, "failed to create diagnostic bundle", e);
                 activity.runOnUiThread(() -> {
                     if (binding == null || !isAdded()) return;
                     binding.buttonDebugBundle.setEnabled(true);
-                    Toast.makeText(activity, "Failed to create debug bundle: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    String reason = e.getMessage() == null ? "unknown error" : e.getMessage();
+                    Toast.makeText(
+                            activity,
+                            getString(R.string.troubleshoot_debug_bundle_failed, reason),
+                            Toast.LENGTH_LONG
+                    ).show();
                 });
             }
         }).start();

@@ -15,6 +15,9 @@ concurrency:
   group: android-debug-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
 jobs:
   build-debug:
     runs-on: ubuntu-latest
@@ -22,10 +25,23 @@ jobs:
       apk_path: ${{ steps.build.outputs.apk_path }}
       bundle_path: ${{ steps.build.outputs.bundle_path }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact source revision
+        uses: actions/checkout@v5
         with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "Verified exact Android source revision: $SOURCE_SHA"
 
       - name: Validate GoreeCloud Android source boundaries
         run: bash scripts/validate-goreecloud-android.sh
@@ -63,10 +79,22 @@ jobs:
     needs: build-debug
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact source revision
+        uses: actions/checkout@v5
         with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -88,7 +116,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-results
+          name: unit-test-results-${{ env.SOURCE_SHA }}
           path: |
             app/build/reports/tests/
             tool/build/reports/tests/
@@ -98,10 +126,22 @@ jobs:
     needs: build-debug
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact source revision
+        uses: actions/checkout@v5
         with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -138,7 +178,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: instrumented-test-results
+          name: instrumented-test-results-${{ env.SOURCE_SHA }}
           path: |
             app/build/reports/androidTests/
             tool/build/reports/androidTests/

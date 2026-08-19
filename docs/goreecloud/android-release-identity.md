@@ -22,10 +22,28 @@ Release and signed-snapshot builds use GoreeCloud-specific signing inputs:
 - `GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD`
 - `GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS`
 - `GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD`
+- `GOREECLOUD_NETWORK_SIGNING_CERT_SHA256`
 
 Signing material must be stored only in approved GitHub environment/repository secrets or the designated GoreeCloud secrets system. Keystores, passwords, aliases, private keys, and reusable credentials must never be committed to the repository.
 
 The release workflow must fail if required signing material is absent. It must not silently produce an unsigned artifact while presenting it as a GoreeCloud release.
+
+`GOREECLOUD_NETWORK_SIGNING_CERT_SHA256` is the expected public certificate fingerprint for the approved GoreeCloud Android signing identity. Signed release and snapshot workflows verify the produced APK cryptographically and compare the signer against that fingerprint when configured.
+
+## Artifact verification contract
+
+Every signed release or signed snapshot must pass `scripts/verify-goreecloud-artifact.sh` before distribution. The verifier currently requires evidence that:
+
+- `apksigner` reports a valid APK signature;
+- the signer certificate SHA-256 digest can be extracted;
+- the signer digest matches `GOREECLOUD_NETWORK_SIGNING_CERT_SHA256` when the fingerprint is configured;
+- the built package identity matches the currently approved expected package identity;
+- the APK does not request Google Advertising ID permission;
+- retired Firebase, Crashlytics, Google Services, and Lottie markers are not present in the APK archive;
+- the APK SHA-256 digest is recorded;
+- the release AAB exists, is non-empty, passes ZIP integrity validation, and has a SHA-256 digest recorded.
+
+Until the final application ID is approved, the artifact validator expects the inherited compatibility identity `io.netbird.client`. The validator must be updated in the same reviewed migration that changes the application ID.
 
 ## Migration decision required
 
@@ -50,7 +68,8 @@ Do not mark a GoreeCloud Network Android release candidate production-ready unti
 
 - clean debug build;
 - clean signed release APK and AAB build;
-- artifact signature inspection;
+- artifact signature inspection and approved signer-fingerprint match;
+- APK/AAB integrity and SHA-256 records;
 - package/application-ID decision documented;
 - coexistence behavior tested against the stock NetBird client where migration requires it;
 - VPN permission and Always On VPN behavior tested;
@@ -63,4 +82,4 @@ Do not mark a GoreeCloud Network Android release candidate production-ready unti
 
 ## Compatibility boundary
 
-This release-identity work does not change WireGuard/tunnel establishment, TUN behavior, routing, DNS mechanics, firewall mechanics, gomobile behavior, SSO protocol behavior, setup-key protocol behavior, or management-server APIs.
+This release-identity and artifact-verification work does not change WireGuard/tunnel establishment, TUN behavior, routing, DNS mechanics, firewall mechanics, gomobile behavior, SSO protocol behavior, setup-key protocol behavior, or management-server APIs.

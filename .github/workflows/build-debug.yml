@@ -2,12 +2,18 @@ name: build debug
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
+      - "agent/**"
 
 permissions:
   contents: read
+
+concurrency:
+  group: android-debug-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-debug:
@@ -25,7 +31,7 @@ jobs:
         id: version
         run: |
           SHORT_GIT_SHA=$(git rev-parse --short HEAD)
-          echo "version_name=ci-${SHORT_GIT_SHA}" >> $GITHUB_OUTPUT
+          echo "version_name=ci-${SHORT_GIT_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Build Android
         id: build

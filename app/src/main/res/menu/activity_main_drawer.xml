@@ -20,10 +20,6 @@
             android:icon="@drawable/ic_menu_change_server"
             android:title="@string/menu_change_server" />
         <item
-            android:id="@+id/nav_docs"
-            android:icon="@drawable/ic_menu_docs"
-            android:title="@string/menu_docs" />
-        <item
             android:id="@+id/nav_troubleshoot"
             android:icon="@drawable/ic_menu_troubleshoot"
             android:title="@string/menu_troubleshoot" />

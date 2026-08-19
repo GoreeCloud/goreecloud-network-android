@@ -27,6 +27,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Validate GoreeCloud Android source boundaries
+        run: bash scripts/validate-goreecloud-android.sh
+
       - name: Get short Git hash
         id: version
         run: |

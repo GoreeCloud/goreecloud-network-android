@@ -86,7 +86,7 @@ public class PreferencesInstrumentedTest {
 
     @Test
     public void shouldReturnCorrectDefaultServer() {
-        final var defaultServer = "https://api.netbird.io";
+        final var defaultServer = "https://netbird.goreecloud.com";
 
         Assert.assertEquals(defaultServer, Preferences.defaultServer());
     }

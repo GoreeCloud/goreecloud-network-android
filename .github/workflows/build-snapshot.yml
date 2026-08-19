@@ -11,6 +11,9 @@ concurrency:
   group: android-version-code-lock
   cancel-in-progress: false
 
+env:
+  SOURCE_SHA: ${{ github.sha }}
+
 jobs:
   build-snapshot:
     runs-on: ubuntu-latest
@@ -21,10 +24,23 @@ jobs:
       GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD }}
       GOREECLOUD_NETWORK_SIGNING_CERT_SHA256: ${{ secrets.GOREECLOUD_NETWORK_SIGNING_CERT_SHA256 }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact source revision
+        uses: actions/checkout@v5
         with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "Verified exact signed-snapshot source revision: $SOURCE_SHA"
 
       - name: Get version name
         id: version
@@ -81,11 +97,24 @@ jobs:
           unzip -t "${{ steps.build.outputs.bundle_path }}"
           sha256sum "${{ steps.build.outputs.bundle_path }}"
 
+      - name: Write signed snapshot provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "GOREECLOUD_NETWORK_SOURCE_SHA=$SOURCE_SHA"
+            echo "GOREECLOUD_NETWORK_VERSION=${{ steps.version.outputs.version_name }}"
+            echo "GOREECLOUD_NETWORK_VERSION_CODE=${{ steps.version_code.outputs.version_code }}"
+            sha256sum "${{ steps.build.outputs.apk_path }}"
+            sha256sum "${{ steps.build.outputs.bundle_path }}"
+          } > goreecloud-network-snapshot-provenance.txt
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.version.outputs.version_name }}
+          name: ${{ steps.version.outputs.version_name }}-${{ env.SOURCE_SHA }}
           path: |
             ${{ steps.build.outputs.apk_path }}
             ${{ steps.build.outputs.bundle_path }}
+            goreecloud-network-snapshot-provenance.txt
           retention-days: 14

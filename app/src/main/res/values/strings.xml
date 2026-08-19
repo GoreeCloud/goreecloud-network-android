@@ -10,14 +10,14 @@
 
     <string name="menu_advanced">Advanced</string>
     <string name="menu_about">About</string>
-    <string name="menu_docs">Docs</string>
+    <string name="menu_docs">Documentation</string>
     <string name="menu_change_server">Change Server</string>
     <string name="menu_profiles">Profiles</string>
     <string name="menu_troubleshoot">Troubleshoot</string>
 
     <string name="main_status_disconnected">Disconnected</string>
-    <string name="main_desc_bg_mask">background mask</string>
-    <string name="main_desc_connect">connect-disconnect</string>
+    <string name="main_desc_bg_mask">Connection panel background</string>
+    <string name="main_desc_connect">Connect or disconnect GoreeCloud Network</string>
 
     <string name="fragment_firstinstall_txt">GoreeCloud Network is configured for your self-hosted GoreeCloud server by default. Select Change Server to use another compatible management server.</string>
     <string name="fragment_firstinstall_continue">Continue</string>
@@ -29,12 +29,12 @@
     <string name="about_privacy_poliy"><u>Privacy information</u></string>
     <string name="about_rights">GoreeCloud Network is based on open-source NetBird components. See licenses and attribution for details.</string>
 
-    <string name="zero_peers_no_machines">It looks like there are no machines that you can connect to…</string>
-    <string name="zero_peers_btn_learn_why">Learn why</string>
+    <string name="zero_peers_no_machines">No approved devices are currently available through this GoreeCloud Network profile.</string>
+    <string name="zero_peers_btn_learn_why">Review access</string>
 
     <string name="btn_close">Close</string>
-    <string name="peers_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> Peers connected]]></string>
-    <string name="peers_hint_search_peers">Search peers</string>
+    <string name="peers_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> devices connected]]></string>
+    <string name="peers_hint_search_peers">Search devices</string>
     <string name="peer_filter_all">All</string>
     <string name="peer_filter_idle">Idle</string>
     <string name="peer_filter_connecting">Connecting</string>
@@ -42,11 +42,11 @@
     <string name="peers_clipboard_copy_ip">Copy IP</string>
     <string name="peers_clipboard_copy_ipv6">Copy IPv6</string>
     <string name="peers_clipboard_copy_fqdn">Copy FQDN</string>
-    <string name="peers_desc_filter">Filter</string>
+    <string name="peers_desc_filter">Filter devices</string>
 
-    <string name="resources_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> Resources connected]]></string>
+    <string name="resources_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> resources connected]]></string>
     <string name="networks_hint_search_networks">Search resources</string>
-    <string name="networks_desc_exit_node">exit node</string>
+    <string name="networks_desc_exit_node">Exit route</string>
 
     <string name="change_server_title_server">Server</string>
     <string name="change_server_hint">https://netbird.goreecloud.com</string>
@@ -69,14 +69,14 @@
     <string name="change_server_success_icon">Success icon</string>
 
     <string name="advanced_title_presharedkey">Add a pre-shared key</string>
-    <string name="advanced_details">You will only communicate with peers that use the same key.</string>
+    <string name="advanced_details">You will only communicate with devices that use the same key.</string>
     <string name="advanced_hint">Add a pre-shared key</string>
     <string name="advanced_save">Save</string>
     <string name="advanced_presharedkey_saved_success">Pre-shared key saved successfully</string>
     <string name="advanced_presharedkey_save_error">Failed to save pre-shared key</string>
     <string name="advanced_tracelog">Enable trace log level.</string>
     <string name="advanced_share_logs">Share logs</string>
-    <string name="troubleshoot_debug_bundle">Upload debug bundle</string>
+    <string name="troubleshoot_debug_bundle">Create debug bundle</string>
     <string name="troubleshoot_anonymize">Anonymize sensitive data</string>
     <string name="advanced_rosenpass">Enable Rosenpass</string>
     <string name="advanced_rosenpass_permissive">Enable Rosenpass permissive mode.</string>
@@ -98,8 +98,8 @@
     <string name="advanced_block_inbound_desc">Blocks all inbound connections to this device and routed networks. This overrides any policies received from the management service</string>
 
     <string name="desc_logo">GoreeCloud Network logo</string>
-    <string name="desc_exclamation_mark">exclamation mark</string>
-    <string name="desc_peers_empty">empty box</string>
+    <string name="desc_exclamation_mark">Warning</string>
+    <string name="desc_peers_empty">No devices</string>
 
     <string name="dialog_always_on_desc"><![CDATA[Another VPN app has Always On enabled. To enable GoreeCloud Network, open your <b>Network & Internet settings</b> → <b>Advanced</b> and review the <b>gear icon</b> for the VPN apps listed there. Disable Always On for the conflicting VPN app before reconnecting.]]></string>
 
@@ -109,15 +109,14 @@
     <string name="advanced_theme_light">Light</string>
     <string name="advanced_theme_desc">Choose the app appearance mode.</string>
     <string name="advanced_force_relay_conn">Force relay connection</string>
-    <string name="advanced_force_relay_conn_desc">Forces usage of relay when connecting to peers</string>
-    <string name="exclamation_mark">exclamation mark</string>
-    <string name="reconnectionNeededWarningMessage">To apply the setting, you will need to reconnect.</string>
+    <string name="advanced_force_relay_conn_desc">Forces relay use instead of direct device connectivity</string>
+    <string name="exclamation_mark">Warning</string>
+    <string name="reconnectionNeededWarningMessage">Reconnect to apply this setting.</string>
     <string name="change_server_setup_key_warning">Using setup keys for user devices is not recommended. SSO with MFA provides stronger security, proper user-device association, and controlled re-authentication.</string>
     <string name="change_server_error_invalid_server_url">Invalid URL format</string>
     <string name="device_code">Device Code: %s</string>
-    <string name="tv_menu_hint">Hold left directional button to open the menu</string>
+    <string name="tv_menu_hint">Hold the left directional button to open the menu</string>
 
-    <!-- Profile strings -->
     <string name="profile_default">Profile: default</string>
     <string name="profile_tap_to_manage">Tap to manage profiles</string>
     <string name="profiles_title">Profiles</string>

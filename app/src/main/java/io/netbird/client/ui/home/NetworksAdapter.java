@@ -36,7 +36,6 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Resour
     @NonNull
     @Override
     public ResourceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use ViewBinding to inflate the layout
         ListItemResourceBinding binding = ListItemResourceBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
         return new ResourceViewHolder(binding, switchToggleHandler);
@@ -79,9 +78,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Resour
     }
 
     private void sort() {
-        filteredResourcesList.sort((p1, p2) -> {
-            return p1.getName().compareToIgnoreCase(p2.getName());
-        });
+        filteredResourcesList.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
     }
 
     public static class ResourceViewHolder extends RecyclerView.ViewHolder {
@@ -94,22 +91,6 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Resour
             this.switchToggleHandler = switchToggleHandler;
         }
 
-        /**
-         * <p>
-         * Returns a drawable indicating whether a given resource is CONNECTED, SELECTED or DESELECTED.
-         * A resource is considered CONNECTED when, given a list of routing peers, at least one of them
-         * also has a CONNECTED status and contains a route that maps to that given resource's address
-         * </p>
-         * <p>
-         * OR
-         * </p>
-         * <p>
-         * if the resource is mapped to a domain whose any of its resolved IP addresses is contained
-         * in any of the CONNECTED routing peer's routes.
-         * <p>
-         * Barring those conditions, it simply checks if the resource is selected or not.
-         * </p>
-         */
         @DrawableRes
         private int getConnectionStatusIndicatorDrawable(Resource resource, List<RoutingPeer> peers) {
             var connectedPeers = peers.stream()
@@ -143,20 +124,25 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Resour
             binding.address.setText(resource.getAddress());
             binding.name.setText(resource.getName());
             binding.peer.setText(resource.getPeer());
+            binding.switchControl.setContentDescription(
+                    binding.switchControl.getContext().getString(
+                            R.string.resources_toggle_access,
+                            resource.getName()
+                    )
+            );
 
-            // Necessary when rebinding because onCheckedChangeListener is already set.
+            // Prevent a recycled view from sending a route-selection event while its state is restored.
             binding.switchControl.setTag(true);
-
             binding.switchControl.setChecked(resource.isSelected());
             binding.switchControl.setTag(false);
             binding.switchControl.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 try {
-                    boolean tag = (boolean)binding.switchControl.getTag();
+                    boolean tag = (boolean) binding.switchControl.getTag();
                     if (!tag) {
                         this.switchToggleHandler.handleSwitchToggle(resource.getName(), isChecked);
                     }
                 } catch (Exception ignored) {
-                    // This is done so that reversing the toggle action won't retrigger the toggle handler.
+                    // Reverse the visual toggle without retriggering the route-selection handler.
                     binding.switchControl.setTag(true);
                     binding.switchControl.setChecked(!isChecked);
                     binding.switchControl.setTag(false);
@@ -164,13 +150,9 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Resour
             });
 
             binding.verticalLine.setBackgroundResource(getConnectionStatusIndicatorDrawable(resource, peers));
-
-            if (resource.isExitNode()) {
-                binding.exitNode.setVisibility(android.view.View.VISIBLE);
-            } else {
-                binding.exitNode.setVisibility(android.view.View.GONE);
-            }
-
+            binding.exitNode.setVisibility(resource.isExitNode()
+                    ? android.view.View.VISIBLE
+                    : android.view.View.GONE);
         }
     }
 }

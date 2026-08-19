@@ -25,9 +25,9 @@
     <string name="fragment_firstinstall_androidtv_beta">Android TV support is currently in beta. Some features may not work as expected.</string>
 
     <string name="about_version">Version:&#160;</string>
-    <string name="about_license"><u>Open-source licenses</u></string>
-    <string name="about_privacy_poliy"><u>Privacy information</u></string>
-    <string name="about_rights">GoreeCloud Network is based on open-source NetBird components. See licenses and attribution for details.</string>
+    <string name="about_open_source_foundation">Open-source foundation: GoreeCloud Network is derived from NetBird components and remains subject to the applicable upstream and GoreeCloud repository license notices.</string>
+    <string name="about_privacy_summary">Privacy by default: this GoreeCloud build removes the inherited optional Google Analytics, Firebase Crashlytics, and Advertising ID integration path. Network traffic and diagnostic data remain subject to the configured self-hosted services and administrator settings.</string>
+    <string name="about_rights">GoreeCloud Network is a GoreeCloud-maintained private-networking client built on open-source foundations.</string>
 
     <string name="zero_peers_no_machines">No approved devices are currently available through this GoreeCloud Network profile.</string>
     <string name="zero_peers_btn_learn_why">Review access</string>

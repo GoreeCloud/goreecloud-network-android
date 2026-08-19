@@ -47,6 +47,7 @@
     <string name="resources_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> resources connected]]></string>
     <string name="networks_hint_search_networks">Search resources</string>
     <string name="networks_desc_exit_node">Exit route</string>
+    <string name="resources_toggle_access">Use resource %1$s</string>
 
     <string name="change_server_title_server">Management server</string>
     <string name="change_server_hint">https://netbird.goreecloud.com</string>

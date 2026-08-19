@@ -19,6 +19,7 @@ jobs:
       GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS }}
       GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD }}
       GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_SIGNING_CERT_SHA256: ${{ secrets.GOREECLOUD_NETWORK_SIGNING_CERT_SHA256 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,10 +32,6 @@ jobs:
           SHORT_GIT_SHA=$(git rev-parse --short HEAD)
           echo "version_name=snapshot-${SHORT_GIT_SHA}" >> "$GITHUB_OUTPUT"
 
-      # Signed snapshots and releases share one monotonically increasing version
-      # code sequence so a test artifact cannot consume a code later reused by a
-      # release. This is repository-local release lineage and is independent of
-      # any particular app-store publication path.
       - name: Compute version code
         id: version_code
         env:
@@ -74,6 +71,15 @@ jobs:
           version_name: ${{ steps.version.outputs.version_name }}
           version_code: ${{ steps.version_code.outputs.version_code }}
           build_type: release
+
+      - name: Verify GoreeCloud snapshot APK
+        run: bash scripts/verify-goreecloud-artifact.sh "${{ steps.build.outputs.apk_path }}"
+
+      - name: Verify snapshot bundle archive
+        run: |
+          test -s "${{ steps.build.outputs.bundle_path }}" || { echo "::error::Snapshot bundle is missing or empty"; exit 1; }
+          unzip -t "${{ steps.build.outputs.bundle_path }}"
+          sha256sum "${{ steps.build.outputs.bundle_path }}"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

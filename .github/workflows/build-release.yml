@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: android-release
     env:
-      NETBIRD_UPLOAD_KEY_ALIAS: ${{ secrets.NETBIRD_UPLOAD_KEY_ALIAS }}
-      NETBIRD_UPLOAD_KEY_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_KEY_PASSWORD }}
-      NETBIRD_UPLOAD_STORE_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD }}
     outputs:
       apk_path: ${{ steps.build.outputs.apk_path }}
       bundle_path: ${{ steps.build.outputs.bundle_path }}
@@ -36,26 +36,17 @@ jobs:
           TAG_NAME=${{ github.event.release.tag_name }}
           echo "version_name=$TAG_NAME" >> $GITHUB_OUTPUT
 
-      - name: Write google-services.json
+      - name: Write release keystore
         run: |
-          echo "${{ secrets.GOOGLE_JSON }}" | base64 -d > app/google-services.json
+          test -n "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" || { echo "::error::GOREECLOUD_NETWORK_KEYSTORE is not configured"; exit 1; }
+          echo "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" | base64 -d > goreecloud-network.keystore
+          echo "GOREECLOUD_NETWORK_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/goreecloud-network.keystore" >> "$GITHUB_ENV"
 
-      - name: Write keystore file
-        run: |
-          echo "${{ secrets.GPLAY_KEYSTORE }}" | base64 -d > gplay.keystore
-          echo "NETBIRD_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/gplay.keystore" >> $GITHUB_ENV
-
-      # Must stay identical to the Compute version code step in the sibling
-      # workflow. build-release.yml and build-snapshot.yml feed the same Play
-      # Store listing, so they have to draw from one shared counter; a
-      # github.run_number sees only its own workflow's runs and would hand out a
-      # code the other already used. The concurrency group above keeps the two
-      # from computing at once. Renaming either workflow file resets the count
-      # GitHub keeps for it, which would send version codes backwards.
-      #
-      # A 404 means the workflow has never run and is not on the default branch
-      # yet, which is a true zero. Any other failure aborts the build: falling
-      # back to zero would mint a version code below already-published ones.
+      # Release and snapshot artifacts share one monotonically increasing code
+      # sequence so a signed test build can never consume a version code that a
+      # later release tries to reuse. The concurrency group above serializes the
+      # calculation. This is repository-local release lineage and does not imply
+      # publication to any particular app store.
       - name: Compute version code
         id: version_code
         env:

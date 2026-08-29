@@ -65,6 +65,26 @@ public class PreferencesInstrumentedTest {
     }
 
     @Test
+    public void shouldReturnFalseWhenObfuscationModeIsNotSet() {
+        Assert.assertFalse(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
+    public void shouldReturnTrueAfterEnablingObfuscationMode() {
+        preferences.enableObfuscationMode();
+
+        Assert.assertTrue(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
+    public void shouldReturnFalseAfterDisablingObfuscationMode() {
+        preferences.enableObfuscationMode();
+        preferences.disableObfuscationMode();
+
+        Assert.assertFalse(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
     public void shouldReturnFalseWhenTraceLogIsNotSet() {
         Assert.assertFalse(preferences.isTraceLogEnabled());
     }

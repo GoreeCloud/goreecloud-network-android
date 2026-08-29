@@ -324,16 +324,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_docs) {
-            item.setCheckable(false);
-            binding.drawerLayout.closeDrawers();
-            openDocs();
-            return true;
-        }
-
-        // Use NavigationUI which handles launchSingleTop and saveState/restoreState
-        // This prevents fragment recreation and preserves state when alternating between destinations
+        // Use NavigationUI which handles launchSingleTop and saveState/restoreState.
+        // This prevents fragment recreation and preserves state when alternating between destinations.
         boolean isHandled = NavigationUI.onNavDestinationSelected(item, navController);
         binding.drawerLayout.closeDrawers();
         return isHandled;
@@ -479,12 +471,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void unregisterServiceStateListener(StateListener listener) {
         serviceStateListeners.remove(listener);
-    }
-
-    private void openDocs() {
-        String url = "https://docs.netbird.io";  // Replace with the desired URL
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
     }
 
     private void startService() {

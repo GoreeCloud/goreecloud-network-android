@@ -11,42 +11,43 @@ concurrency:
   group: android-version-code-lock
   cancel-in-progress: false
 
+env:
+  SOURCE_SHA: ${{ github.sha }}
+
 jobs:
   build-snapshot:
     runs-on: ubuntu-latest
     environment: android-release
     env:
-      NETBIRD_UPLOAD_KEY_ALIAS: ${{ secrets.NETBIRD_UPLOAD_KEY_ALIAS }}
-      NETBIRD_UPLOAD_KEY_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_KEY_PASSWORD }}
-      NETBIRD_UPLOAD_STORE_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_SIGNING_CERT_SHA256: ${{ secrets.GOREECLOUD_NETWORK_SIGNING_CERT_SHA256 }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact source revision
+        uses: actions/checkout@v5
         with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
           submodules: recursive
 
-      # Reaches the management server as the peer's ui_version and is shown on
-      # the app's about screen, so it has to say at a glance that this build was
-      # signed and handed out rather than released. build-debug.yml already
-      # claims the ci- prefix, and sharing it would make an unsigned PR build
-      # and a signed hand-out indistinguishable in the peer list.
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "Verified exact signed-snapshot source revision: $SOURCE_SHA"
+
       - name: Get version name
         id: version
         run: |
           SHORT_GIT_SHA=$(git rev-parse --short HEAD)
           echo "version_name=snapshot-${SHORT_GIT_SHA}" >> "$GITHUB_OUTPUT"
 
-      # Must stay identical to the Compute version code step in the sibling
-      # workflow. build-release.yml and build-snapshot.yml feed the same Play
-      # Store listing, so they have to draw from one shared counter; a
-      # github.run_number sees only its own workflow's runs and would hand out a
-      # code the other already used. The concurrency group above keeps the two
-      # from computing at once. Renaming either workflow file resets the count
-      # GitHub keeps for it, which would send version codes backwards.
-      #
-      # A 404 means the workflow has never run and is not on the default branch
-      # yet, which is a true zero. Any other failure aborts the build: falling
-      # back to zero would mint a version code below already-published ones.
       - name: Compute version code
         id: version_code
         env:
@@ -73,14 +74,11 @@ jobs:
           echo "Release runs: $release_runs, snapshot runs: $snapshot_runs -> version_code=$version_code"
           echo "version_code=$version_code" >> "$GITHUB_OUTPUT"
 
-      - name: Write google-services.json
+      - name: Write release keystore
         run: |
-          echo "${{ secrets.GOOGLE_JSON }}" | base64 -d > app/google-services.json
-
-      - name: Write keystore file
-        run: |
-          echo "${{ secrets.GPLAY_KEYSTORE }}" | base64 -d > gplay.keystore
-          echo "NETBIRD_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/gplay.keystore" >> "$GITHUB_ENV"
+          test -n "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" || { echo "::error::GOREECLOUD_NETWORK_KEYSTORE is not configured"; exit 1; }
+          echo "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" | base64 -d > goreecloud-network.keystore
+          echo "GOREECLOUD_NETWORK_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/goreecloud-network.keystore" >> "$GITHUB_ENV"
 
       - name: Build Android
         id: build
@@ -90,11 +88,33 @@ jobs:
           version_code: ${{ steps.version_code.outputs.version_code }}
           build_type: release
 
+      - name: Verify GoreeCloud snapshot APK
+        run: bash scripts/verify-goreecloud-artifact.sh "${{ steps.build.outputs.apk_path }}"
+
+      - name: Verify snapshot bundle archive
+        run: |
+          test -s "${{ steps.build.outputs.bundle_path }}" || { echo "::error::Snapshot bundle is missing or empty"; exit 1; }
+          unzip -t "${{ steps.build.outputs.bundle_path }}"
+          sha256sum "${{ steps.build.outputs.bundle_path }}"
+
+      - name: Write signed snapshot provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "GOREECLOUD_NETWORK_SOURCE_SHA=$SOURCE_SHA"
+            echo "GOREECLOUD_NETWORK_VERSION=${{ steps.version.outputs.version_name }}"
+            echo "GOREECLOUD_NETWORK_VERSION_CODE=${{ steps.version_code.outputs.version_code }}"
+            sha256sum "${{ steps.build.outputs.apk_path }}"
+            sha256sum "${{ steps.build.outputs.bundle_path }}"
+          } > goreecloud-network-snapshot-provenance.txt
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.version.outputs.version_name }}
+          name: ${{ steps.version.outputs.version_name }}-${{ env.SOURCE_SHA }}
           path: |
             ${{ steps.build.outputs.apk_path }}
             ${{ steps.build.outputs.bundle_path }}
+            goreecloud-network-snapshot-provenance.txt
           retention-days: 14

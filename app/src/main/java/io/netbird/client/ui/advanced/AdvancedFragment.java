@@ -3,6 +3,8 @@ package io.netbird.client.ui.advanced;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +23,30 @@ import io.netbird.client.databinding.ComponentSwitchBinding;
 import io.netbird.client.databinding.FragmentAdvancedBinding;
 import io.netbird.client.tool.Preferences;
 import io.netbird.client.tool.ProfileManagerWrapper;
+import io.netbird.gomobile.android.Android;
 
 
 public class AdvancedFragment extends Fragment {
 
     private static final String hiddenKey = "********";
     private static final String LOGTAG = "AdvancedFragment";
+    private static final long OBFUSCATION_STATUS_REFRESH_MS = 1000L;
 
     private FragmentAdvancedBinding binding;
+    private ComponentSwitchBinding obfuscationModeBinding;
     private io.netbird.gomobile.android.Preferences goPreferences;
+    private Preferences appPreferences;
+    private Handler obfuscationStatusHandler;
+
+    private final Runnable obfuscationStatusRefresh = new Runnable() {
+        @Override
+        public void run() {
+            refreshObfuscationModeStatus();
+            if (binding != null && obfuscationStatusHandler != null) {
+                obfuscationStatusHandler.postDelayed(this, OBFUSCATION_STATUS_REFRESH_MS);
+            }
+        }
+    };
 
     private void showReconnectionNeededWarningDialog() {
         final View dialogView = getLayoutInflater().inflate(R.layout.dialog_simple_alert_message, null);
@@ -63,6 +80,59 @@ public class AdvancedFragment extends Fragment {
         });
     }
 
+    private void configureObfuscationModeSwitch(@NonNull ComponentSwitchBinding obfuscationBinding,
+                                                 @NonNull Preferences preferences) {
+        obfuscationBinding.switchTitle.setText(R.string.advanced_obfuscation_mode);
+        obfuscationBinding.switchControl.setContentDescription(getString(R.string.advanced_obfuscation_mode));
+        obfuscationBinding.switchControl.setChecked(preferences.isObfuscationModeEnabled());
+        obfuscationBinding.switchControl.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                preferences.enableObfuscationMode();
+            } else {
+                preferences.disableObfuscationMode();
+            }
+
+            refreshObfuscationModeStatus();
+            showReconnectionNeededWarningDialog();
+        });
+
+        // Keep the whole Glaze UI row keyboard/TV accessible, matching the
+        // other advanced networking controls.
+        obfuscationBinding.getRoot().setOnClickListener(v -> obfuscationBinding.switchControl.toggle());
+        refreshObfuscationModeStatus();
+    }
+
+    private void refreshObfuscationModeStatus() {
+        if (obfuscationModeBinding == null || appPreferences == null) {
+            return;
+        }
+        if (!appPreferences.isObfuscationModeEnabled()) {
+            obfuscationModeBinding.switchDescription.setText(R.string.advanced_obfuscation_mode_desc);
+            return;
+        }
+
+        String runtimeState = "";
+        try {
+            runtimeState = Android.getConduitObfuscationRuntimeState();
+        } catch (Exception e) {
+            // Treat an unavailable binding/runtime as not-yet-confirmed rather
+            // than falsely claiming active obfuscation.
+            Log.w(LOGTAG, "Could not read Conduit obfuscation runtime state", e);
+        }
+
+        int description = R.string.advanced_obfuscation_mode_requested;
+        if (Android.getConduitObfuscationStateNegotiating().equals(runtimeState)) {
+            description = R.string.advanced_obfuscation_mode_negotiating;
+        } else if (Android.getConduitObfuscationStateActive().equals(runtimeState)) {
+            description = R.string.advanced_obfuscation_mode_active;
+        } else if (Android.getConduitObfuscationStateUnavailable().equals(runtimeState)) {
+            description = R.string.advanced_obfuscation_mode_unavailable;
+        } else if (Android.getConduitObfuscationStateFailed().equals(runtimeState)) {
+            description = R.string.advanced_obfuscation_mode_failed;
+        }
+        obfuscationModeBinding.switchDescription.setText(description);
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -78,6 +148,7 @@ public class AdvancedFragment extends Fragment {
 
         binding = FragmentAdvancedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        obfuscationStatusHandler = new Handler(Looper.getMainLooper());
 
         if (hasPreSharedKey(inflater.getContext())) {
             binding.presharedKey.setText(hiddenKey);
@@ -101,7 +172,7 @@ public class AdvancedFragment extends Fragment {
             setPreSharedKey(presharedKey, inflater.getContext());
         });
 
-        Preferences preferences = new Preferences(inflater.getContext());
+        appPreferences = new Preferences(inflater.getContext());
 
         // Rosenpass settings
         try {
@@ -158,7 +229,18 @@ public class AdvancedFragment extends Fragment {
             binding.switchRosenpassPermissive.toggle();
         });
 
-        configureForceRelayConnectionSwitch(binding.layoutForceRelayConnection, preferences);
+        configureForceRelayConnectionSwitch(binding.layoutForceRelayConnection, appPreferences);
+
+        // Add Obfuscation Mode immediately after Force Relay. Runtime status is
+        // sourced from the Go engine and only reports active after the dedicated
+        // Conduit transport completes the authenticated relay handshake.
+        obfuscationModeBinding = ComponentSwitchBinding.inflate(
+                inflater,
+                binding.layoutTheme,
+                false
+        );
+        binding.layoutTheme.addView(obfuscationModeBinding.getRoot(), 0);
+        configureObfuscationModeSwitch(obfuscationModeBinding, appPreferences);
 
         // Initialize engine config switches (your settings)
         initializeEngineConfigSwitches();
@@ -298,7 +380,30 @@ public class AdvancedFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (obfuscationStatusHandler != null) {
+            obfuscationStatusHandler.removeCallbacks(obfuscationStatusRefresh);
+            obfuscationStatusRefresh.run();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (obfuscationStatusHandler != null) {
+            obfuscationStatusHandler.removeCallbacks(obfuscationStatusRefresh);
+        }
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
+        if (obfuscationStatusHandler != null) {
+            obfuscationStatusHandler.removeCallbacks(obfuscationStatusRefresh);
+        }
+        obfuscationModeBinding = null;
+        appPreferences = null;
+        obfuscationStatusHandler = null;
         super.onDestroyView();
         binding = null;
     }

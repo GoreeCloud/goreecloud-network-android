@@ -1,41 +1,40 @@
 <resources>
-    <string name="app_name">NetBird</string>
+    <string name="app_name">GoreeCloud Network</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">GoreeCloud Network</string>
+    <string name="nav_header_subtitle">Private networking</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="quick_settings_tile_label">NetBird</string>
+    <string name="quick_settings_tile_label">GoreeCloud Network</string>
 
-    <string name="menu_advanced">Advanced</string>
+    <string name="menu_advanced">Advanced networking</string>
     <string name="menu_about">About</string>
-    <string name="menu_docs">Docs</string>
-    <string name="menu_change_server">Change Server</string>
-    <string name="menu_profiles">Profiles</string>
-    <string name="menu_troubleshoot">Troubleshoot</string>
+    <string name="menu_docs">Documentation</string>
+    <string name="menu_change_server">Management server</string>
+    <string name="menu_profiles">Connection profiles</string>
+    <string name="menu_troubleshoot">Diagnostics</string>
 
     <string name="main_status_disconnected">Disconnected</string>
-    <string name="main_desc_bg_mask">background mask</string>
-    <string name="main_desc_connect">connect-disconnect</string>
+    <string name="main_desc_bg_mask">Connection panel background</string>
+    <string name="main_desc_connect">Connect or disconnect GoreeCloud Network</string>
 
-    <string name="fragment_firstinstall_txt">By default you will connect to NetBird\'s cloud servers. You can access the change_server menu to use another server.</string>
+    <string name="fragment_firstinstall_txt">GoreeCloud Network is configured for your self-hosted GoreeCloud server by default. Select Management server only when you intentionally need another compatible server.</string>
     <string name="fragment_firstinstall_continue">Continue</string>
-    <string name="fragment_firstinstall_desc_logo">NetBird logo</string>
+    <string name="fragment_firstinstall_desc_logo">GoreeCloud Network logo</string>
     <string name="fragment_firstinstall_androidtv_beta">Android TV support is currently in beta. Some features may not work as expected.</string>
 
-
     <string name="about_version">Version:&#160;</string>
-    <string name="about_license"><u>License agreement</u></string>
-    <string name="about_privacy_poliy"><u>Privacy policy</u></string>
-    <string name="about_rights">© 2025 NetBird all rights reserved</string>
+    <string name="about_open_source_foundation">Open-source foundation: GoreeCloud Network is derived from NetBird components and remains subject to the applicable upstream and GoreeCloud repository license notices.</string>
+    <string name="about_privacy_summary">Privacy by default: this GoreeCloud build removes the inherited optional Google Analytics, Firebase Crashlytics, and Advertising ID integration path. Network traffic and diagnostic data remain subject to the configured self-hosted services and administrator settings.</string>
+    <string name="about_rights">GoreeCloud Network is a GoreeCloud-maintained private-networking client built on open-source foundations.</string>
 
-    <string name="zero_peers_no_machines">It looks like there are no machines that you can connect to…</string>
-    <string name="zero_peers_btn_learn_why">Learn why</string>
+    <string name="zero_peers_no_machines">No approved devices are currently available through this GoreeCloud Network profile.</string>
+    <string name="zero_peers_btn_learn_why">Review access</string>
 
     <string name="btn_close">Close</string>
-    <string name="peers_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> Peers connected]]></string>
-    <string name="peers_hint_search_peers">Search peers</string>
+    <string name="peers_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> devices connected]]></string>
+    <string name="peers_hint_search_peers">Search devices</string>
     <string name="peer_filter_all">All</string>
     <string name="peer_filter_idle">Idle</string>
     <string name="peer_filter_connecting">Connecting</string>
@@ -43,109 +42,116 @@
     <string name="peers_clipboard_copy_ip">Copy IP</string>
     <string name="peers_clipboard_copy_ipv6">Copy IPv6</string>
     <string name="peers_clipboard_copy_fqdn">Copy FQDN</string>
-    <string name="peers_desc_filter">Filter</string>
+    <string name="peers_desc_filter">Filter devices</string>
 
-
-    <string name="resources_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> Resources connected]]></string>
+    <string name="resources_connected"><![CDATA[<b>%1$d</b> <b>of</b> <b>%2$d</b> resources connected]]></string>
     <string name="networks_hint_search_networks">Search resources</string>
-    <string name="networks_desc_exit_node">exit node</string>
+    <string name="networks_desc_exit_node">Exit route</string>
+    <string name="resources_toggle_access">Use resource %1$s</string>
 
-    <string name="change_server_title_server">Server</string>
-    <string name="change_server_hint">https://example-api.domain.com:443</string>
-    <string name="change_server_setup_key">Add this device with a setup key</string>
+    <string name="change_server_title_server">Management server</string>
+    <string name="change_server_hint">https://netbird.goreecloud.com</string>
+    <string name="change_server_setup_key">Enroll this device with a setup key</string>
     <string name="change_server_setup_key_hint">"0EF79C2F-DEE1-419B-BFC8-1BF529332998"</string>
     <string name="change_server_error_invalid_setup_key">Invalid setup key format</string>
 
-    <string name="change_server_btn">Change</string>
+    <string name="change_server_btn">Apply server</string>
     <string name="change_server_verifying">Verifying…</string>
-    <string name="change_server_btn_reset">Use NetBird server</string>
+    <string name="change_server_btn_reset">Use GoreeCloud server</string>
 
-    <string name="change_server_alert_title">Change Server</string>
-    <string name="change_server_alert_yes">Yes</string>
+    <string name="change_server_alert_title">Change management server</string>
+    <string name="change_server_alert_yes">Change server</string>
     <string name="change_server_alert_cancel">Cancel</string>
-    <string name="change_server_alert_desc">Changing server will erase the local config and disconnect this device from the current NetBird account.</string>
+    <string name="change_server_alert_desc">Changing the management server erases this app profile’s local network configuration and disconnects this device from its current GoreeCloud Network environment. Continue only when the replacement server is intentional and trusted.</string>
 
-    <string name="change_server_success_title">Server was changed</string>
-    <string name="change_server_success_desc">Click on the connect button to continue</string>
-    <string name="change_server_success_cloe">Ok</string>
+    <string name="change_server_success_title">Management server changed</string>
+    <string name="change_server_success_desc">Reconnect to enroll or authenticate against the selected server.</string>
+    <string name="change_server_success_cloe">OK</string>
     <string name="change_server_success_icon">Success icon</string>
 
-
-    <string name="advanced_title_presharedkey">Add a pre-shared key</string>
-    <string name="advanced_details">You will only communicate with peers that use the same key.</string>
-    <string name="advanced_hint">Add a pre-shared key</string>
+    <string name="advanced_title_presharedkey">Pre-shared key</string>
+    <string name="advanced_details">Optional advanced tunnel protection. Only devices configured with the same compatible key can communicate. Changing this value can break connectivity.</string>
+    <string name="advanced_hint">Enter pre-shared key</string>
     <string name="advanced_save">Save</string>
     <string name="advanced_presharedkey_saved_success">Pre-shared key saved successfully</string>
     <string name="advanced_presharedkey_save_error">Failed to save pre-shared key</string>
-    <string name="advanced_tracelog">Enable trace log level.</string>
-    <string name="advanced_share_logs">Share logs</string>
-    <string name="troubleshoot_debug_bundle">Upload debug bundle</string>
-    <string name="troubleshoot_anonymize">Anonymize sensitive data</string>
+    <string name="advanced_tracelog">Enable detailed trace logging for local diagnostics</string>
+    <string name="advanced_share_logs">Share diagnostic logs</string>
+    <string name="troubleshoot_debug_bundle">Generate local diagnostic bundle</string>
+    <string name="troubleshoot_anonymize">Redact sensitive network information</string>
+    <string name="troubleshoot_debug_bundle_key_clipboard_label">Diagnostic bundle key</string>
+    <string name="troubleshoot_debug_bundle_key_copied">Diagnostic bundle key copied to clipboard</string>
+    <string name="troubleshoot_debug_bundle_failed">Could not generate diagnostic bundle: %1$s</string>
     <string name="advanced_rosenpass">Enable Rosenpass</string>
-    <string name="advanced_rosenpass_permissive">Enable Rosenpass permissive mode.</string>
+    <string name="advanced_rosenpass_permissive">Allow fallback when Rosenpass negotiation is unavailable</string>
     <string name="advanced_title_network_security">Network &amp; Security</string>
 
-    <string name="advanced_disable_client_routes">Disable client routes</string>
-    <string name="advanced_disable_client_routes_desc">Prevents this device from processing client routes received from the management service</string>
-    <string name="advanced_disable_server_routes">Disable server routes</string>
-    <string name="advanced_disable_server_routes_desc">Prevents this device from acting as a router for server routes received from the management service</string>
-    <string name="advanced_disable_dns">Disable DNS</string>
-    <string name="advanced_disable_dns_desc">Disables NetBird DNS configuration on this device</string>
-    <string name="advanced_disable_firewall">Disable firewall</string>
-    <string name="advanced_disable_firewall_desc">Disables the NetBird firewall</string>
-    <string name="advanced_disable_ipv6">Disable IPv6</string>
-    <string name="advanced_disable_ipv6_desc">Disables IPv6 overlay addressing on the tunnel interface</string>
-    <string name="advanced_allow_ssh">Enable SSH</string>
-    <string name="advanced_allow_ssh_desc">Allows SSH connections to this device</string>
-    <string name="advanced_block_inbound">Block inbound connections</string>
-    <string name="advanced_block_inbound_desc">Blocks all inbound connections to this device and routed networks. This overrides any policies received from the management service</string>
+    <string name="advanced_disable_client_routes">Disable received routes</string>
+    <string name="advanced_disable_client_routes_desc">Stops this device from using private routes assigned by the management service. This can make approved resources unreachable.</string>
+    <string name="advanced_disable_server_routes">Disable routing for other devices</string>
+    <string name="advanced_disable_server_routes_desc">Stops this device from forwarding server routes assigned by the management service. Use only when this device should no longer act as a routing peer.</string>
+    <string name="advanced_disable_dns">Disable managed DNS</string>
+    <string name="advanced_disable_dns_desc">Stops GoreeCloud Network from applying DNS configuration to this device. Private GoreeCloud names and filtering may stop working.</string>
+    <string name="advanced_disable_firewall">Disable client firewall enforcement</string>
+    <string name="advanced_disable_firewall_desc">Turns off GoreeCloud Network client-side firewall enforcement on this device. This weakens a network protection boundary and should be used only for controlled troubleshooting.</string>
+    <string name="advanced_disable_ipv6">Disable overlay IPv6</string>
+    <string name="advanced_disable_ipv6_desc">Disables IPv6 overlay addressing on the GoreeCloud Network tunnel interface.</string>
+    <string name="advanced_allow_ssh">Allow network SSH service</string>
+    <string name="advanced_allow_ssh_desc">Allows the client’s network SSH capability. This does not replace host authentication, authorization, firewall policy, or GoreeCloud administrative-access requirements.</string>
+    <string name="advanced_block_inbound">Block inbound network connections</string>
+    <string name="advanced_block_inbound_desc">Blocks inbound connections to this device and its routed networks, overriding received access policies for inbound traffic.</string>
 
+    <string name="desc_logo">GoreeCloud Network logo</string>
+    <string name="desc_exclamation_mark">Warning</string>
+    <string name="desc_peers_empty">No devices</string>
 
-    <string name="desc_logo">NetBird logo</string>
-    <string name="desc_exclamation_mark">exclamation mark</string>
-    <string name="desc_peers_empty">empty box</string>
-
-    <string name="dialog_always_on_desc"><![CDATA[You have a VPN app that has Always On turned on. To enable the NetBird app, you first need to go to your <b>Network & Internet settings</b> → <b>Advanced</b> → Check the <b>gear icon</b> for all the apps listed here on this page. Disable Always On for the apps that are not NetBird.]]></string>
+    <string name="dialog_always_on_desc"><![CDATA[Another VPN app has Always On enabled. To enable GoreeCloud Network, open your <b>Network & Internet settings</b> → <b>Advanced</b> and review the <b>gear icon</b> for the VPN apps listed there. Disable Always On for the conflicting VPN app before reconnecting.]]></string>
 
     <string name="advanced_theme_system">System</string>
-    <string name="advanced_theme_title">Theme Mode</string>
+    <string name="advanced_theme_title">Theme</string>
     <string name="advanced_theme_dark">Dark</string>
     <string name="advanced_theme_light">Light</string>
     <string name="advanced_theme_desc">Choose the app appearance mode.</string>
     <string name="advanced_force_relay_conn">Force relay connection</string>
-    <string name="advanced_force_relay_conn_desc">Forces usage of relay when connecting to peers</string>
-    <string name="exclamation_mark">exclamation mark</string>
-    <string name="reconnectionNeededWarningMessage">To apply the setting, you will need to reconnect.</string>
-    <string name="change_server_setup_key_warning">Using setup keys for user devices is not recommended. SSO with MFA provides stronger security, proper user-device association, and periodic re-authentication.</string>
+    <string name="advanced_force_relay_conn_desc">Uses a relay instead of attempting direct device connectivity. This may reduce performance and is intended primarily for diagnostics or constrained networks.</string>
+    <string name="advanced_obfuscation_mode">Obfuscation Mode</string>
+    <string name="advanced_obfuscation_mode_desc">Requests GoreeCloud Conduit’s padded WebSocket-over-TLS relay transport for restrictive networks. This forces a relay path for the connection, can increase latency and battery use, and is applied after reconnecting. Runtime status is verified separately.</string>
+    <string name="advanced_obfuscation_mode_requested">Requested — Obfuscation Mode is enabled, but the current connection has not yet confirmed the Conduit transport. Reconnect if this setting was just changed.</string>
+    <string name="advanced_obfuscation_mode_negotiating">Negotiating — the dedicated Conduit transport endpoint is connected and GoreeCloud Network is waiting for the authenticated relay handshake.</string>
+    <string name="advanced_obfuscation_mode_active">Active — this connection has confirmed the GoreeCloud Conduit padded WebSocket-over-TLS relay transport.</string>
+    <string name="advanced_obfuscation_mode_unavailable">Unavailable — the endpoint does not offer the required Conduit transport. GoreeCloud Network will not silently downgrade to ordinary relay.</string>
+    <string name="advanced_obfuscation_mode_failed">Failed — the required Conduit transport could not be established. GoreeCloud Network will not silently downgrade to ordinary relay.</string>
+    <string name="exclamation_mark">Warning</string>
+    <string name="reconnectionNeededWarningMessage">Reconnect to apply this setting.</string>
+    <string name="change_server_setup_key_warning">Setup keys are enrollment credentials. Use a purpose-limited key only when interactive user authentication is not appropriate, and revoke it when it is no longer required.</string>
     <string name="change_server_error_invalid_server_url">Invalid URL format</string>
     <string name="device_code">Device Code: %s</string>
-    <string name="tv_menu_hint">Hold left directional button to open the menu</string>
+    <string name="tv_menu_hint">Hold the left directional button to open the menu</string>
 
-    <!-- Profile strings -->
     <string name="profile_default">Profile: default</string>
-    <string name="profile_tap_to_manage">Tap to manage profiles</string>
-    <string name="profiles_title">Profiles</string>
+    <string name="profile_tap_to_manage">Tap to manage connection profiles</string>
+    <string name="profiles_title">Connection profiles</string>
     <string name="profiles_active">Active</string>
-    <string name="profiles_add">Add Profile</string>
+    <string name="profiles_add">Add profile</string>
     <string name="profiles_switch">Switch</string>
-    <string name="profiles_logout">Logout</string>
+    <string name="profiles_logout">Sign out</string>
     <string name="profiles_remove">Remove</string>
-    <string name="profiles_dialog_add_title">New Profile</string>
-    <string name="profiles_dialog_add_message">Enter a name for the new profile:</string>
+    <string name="profiles_dialog_add_title">New connection profile</string>
+    <string name="profiles_dialog_add_message">Create a separate local profile for another approved GoreeCloud Network enrollment or compatible management environment.</string>
     <string name="profiles_dialog_add_hint">Profile name</string>
-    <string name="profiles_dialog_switch_title">Switch Profile</string>
-    <string name="profiles_dialog_switch_message">Switch to profile \'%s\'?\n\nThis will disconnect the current connection.</string>
-    <string name="profiles_dialog_logout_title">Logout from Profile</string>
-    <string name="profiles_dialog_logout_message">Logout from profile \'%s\'?\n\nYou will need to re-authenticate to use this profile again.</string>
-    <string name="profiles_dialog_remove_title">Remove Profile</string>
-    <string name="profiles_dialog_remove_message">Are you sure you want to remove profile \'%s\'?\n\nThis action cannot be undone.</string>
+    <string name="profiles_dialog_switch_title">Switch connection profile</string>
+    <string name="profiles_dialog_switch_message">Switch to profile \'%s\'?\n\nThe current network connection will disconnect before the selected profile becomes active.</string>
+    <string name="profiles_dialog_logout_title">Sign out of profile</string>
+    <string name="profiles_dialog_logout_message">Sign out of profile \'%s\'?\n\nYou will need to authenticate again before this profile can reconnect.</string>
+    <string name="profiles_dialog_remove_title">Remove connection profile</string>
+    <string name="profiles_dialog_remove_message">Remove profile \'%s\'?\n\nIts local configuration will be removed from this app. This does not automatically revoke the corresponding device or identity on the management server.</string>
     <string name="profiles_error_empty_name">Profile name cannot be empty</string>
     <string name="profiles_error_invalid_name">Profile name can only contain letters, numbers, hyphens, and underscores</string>
     <string name="profiles_error_already_exists">Profile \'%s\' already exists</string>
     <string name="profiles_error_cannot_remove_active">Cannot remove the active profile. Switch to another profile first.</string>
     <string name="profiles_error_cannot_remove_default">Cannot remove the default profile</string>
-    <string name="profiles_success_added">Profile \'%s\' created successfully</string>
+    <string name="profiles_success_added">Profile \'%s\' created</string>
     <string name="profiles_success_switched">Switched to profile \'%s\'</string>
-    <string name="profiles_success_logged_out">Logged out from profile \'%s\'</string>
-    <string name="profiles_success_removed">Profile \'%s\' removed successfully</string>
+    <string name="profiles_success_logged_out">Signed out of profile \'%s\'</string>
+    <string name="profiles_success_removed">Profile \'%s\' removed from this app</string>
 </resources>

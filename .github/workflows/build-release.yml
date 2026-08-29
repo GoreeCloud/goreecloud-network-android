@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: write
-  # Needed to read the run counts the version code is derived from.
   actions: read
 
 concurrency:
@@ -18,44 +17,48 @@ jobs:
     runs-on: ubuntu-latest
     environment: android-release
     env:
-      NETBIRD_UPLOAD_KEY_ALIAS: ${{ secrets.NETBIRD_UPLOAD_KEY_ALIAS }}
-      NETBIRD_UPLOAD_KEY_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_KEY_PASSWORD }}
-      NETBIRD_UPLOAD_STORE_PASSWORD: ${{ secrets.NETBIRD_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS }}
+      GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD }}
+      GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD: ${{ secrets.GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD }}
+      GOREECLOUD_NETWORK_SIGNING_CERT_SHA256: ${{ secrets.GOREECLOUD_NETWORK_SIGNING_CERT_SHA256 }}
     outputs:
       apk_path: ${{ steps.build.outputs.apk_path }}
       bundle_path: ${{ steps.build.outputs.bundle_path }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout exact release tag
+        uses: actions/checkout@v5
         with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Verify exact release revision
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag_name='${{ github.event.release.tag_name }}'
+          expected_sha="$(git rev-list -n 1 "$tag_name")"
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$expected_sha" ]]; then
+            echo "Release tag $tag_name resolves to $expected_sha but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "source_sha=$actual_sha" >> "$GITHUB_OUTPUT"
+          echo "Verified release tag $tag_name at exact source revision $actual_sha"
 
       - name: Get version
         id: version
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
-          echo "version_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "version_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Write google-services.json
+      - name: Write release keystore
         run: |
-          echo "${{ secrets.GOOGLE_JSON }}" | base64 -d > app/google-services.json
+          test -n "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" || { echo "::error::GOREECLOUD_NETWORK_KEYSTORE is not configured"; exit 1; }
+          echo "${{ secrets.GOREECLOUD_NETWORK_KEYSTORE }}" | base64 -d > goreecloud-network.keystore
+          echo "GOREECLOUD_NETWORK_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/goreecloud-network.keystore" >> "$GITHUB_ENV"
 
-      - name: Write keystore file
-        run: |
-          echo "${{ secrets.GPLAY_KEYSTORE }}" | base64 -d > gplay.keystore
-          echo "NETBIRD_UPLOAD_STORE_FILE=$GITHUB_WORKSPACE/gplay.keystore" >> $GITHUB_ENV
-
-      # Must stay identical to the Compute version code step in the sibling
-      # workflow. build-release.yml and build-snapshot.yml feed the same Play
-      # Store listing, so they have to draw from one shared counter; a
-      # github.run_number sees only its own workflow's runs and would hand out a
-      # code the other already used. The concurrency group above keeps the two
-      # from computing at once. Renaming either workflow file resets the count
-      # GitHub keeps for it, which would send version codes backwards.
-      #
-      # A 404 means the workflow has never run and is not on the default branch
-      # yet, which is a true zero. Any other failure aborts the build: falling
-      # back to zero would mint a version code below already-published ones.
       - name: Compute version code
         id: version_code
         env:
@@ -90,10 +93,32 @@ jobs:
           version_code: ${{ steps.version_code.outputs.version_code }}
           build_type: release
 
+      - name: Verify GoreeCloud release APK
+        run: bash scripts/verify-goreecloud-artifact.sh "${{ steps.build.outputs.apk_path }}"
+
+      - name: Verify release bundle archive
+        run: |
+          test -s "${{ steps.build.outputs.bundle_path }}" || { echo "::error::Release bundle is missing or empty"; exit 1; }
+          unzip -t "${{ steps.build.outputs.bundle_path }}"
+          sha256sum "${{ steps.build.outputs.bundle_path }}"
+
+      - name: Write release provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "GOREECLOUD_NETWORK_RELEASE_TAG=${{ github.event.release.tag_name }}"
+            echo "GOREECLOUD_NETWORK_SOURCE_SHA=${{ steps.source.outputs.source_sha }}"
+            echo "GOREECLOUD_NETWORK_VERSION_CODE=${{ steps.version_code.outputs.version_code }}"
+            sha256sum "${{ steps.build.outputs.apk_path }}"
+            sha256sum "${{ steps.build.outputs.bundle_path }}"
+          } > goreecloud-network-release-provenance.txt
+
       - name: Upload files to existing release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ${{ steps.build.outputs.apk_path }}
             ${{ steps.build.outputs.bundle_path }}
+            goreecloud-network-release-provenance.txt
           tag_name: ${{ github.event.release.tag_name }}

@@ -9,6 +9,8 @@ public class Preferences {
 
     private final String keyForceRelayConnection = "isConnectionForceRelayed";
 
+    private final String keyObfuscationMode = "isObfuscationModeEnabled";
+
     private final SharedPreferences sharedPref;
 
     public Preferences(Context context) {
@@ -38,7 +40,19 @@ public class Preferences {
         sharedPref.edit().putBoolean(keyForceRelayConnection, false).apply();
     }
 
+    public boolean isObfuscationModeEnabled() {
+        return sharedPref.getBoolean(keyObfuscationMode, false);
+    }
+
+    public void enableObfuscationMode() {
+        sharedPref.edit().putBoolean(keyObfuscationMode, true).apply();
+    }
+
+    public void disableObfuscationMode() {
+        sharedPref.edit().putBoolean(keyObfuscationMode, false).apply();
+    }
+
     public static String defaultServer() {
-        return "https://api.netbird.io";
+        return "https://netbird.goreecloud.com";
     }
 }

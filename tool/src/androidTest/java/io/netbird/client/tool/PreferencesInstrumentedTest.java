@@ -65,6 +65,26 @@ public class PreferencesInstrumentedTest {
     }
 
     @Test
+    public void shouldReturnFalseWhenObfuscationModeIsNotSet() {
+        Assert.assertFalse(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
+    public void shouldReturnTrueAfterEnablingObfuscationMode() {
+        preferences.enableObfuscationMode();
+
+        Assert.assertTrue(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
+    public void shouldReturnFalseAfterDisablingObfuscationMode() {
+        preferences.enableObfuscationMode();
+        preferences.disableObfuscationMode();
+
+        Assert.assertFalse(preferences.isObfuscationModeEnabled());
+    }
+
+    @Test
     public void shouldReturnFalseWhenTraceLogIsNotSet() {
         Assert.assertFalse(preferences.isTraceLogEnabled());
     }
@@ -86,7 +106,7 @@ public class PreferencesInstrumentedTest {
 
     @Test
     public void shouldReturnCorrectDefaultServer() {
-        final var defaultServer = "https://api.netbird.io";
+        final var defaultServer = "https://netbird.goreecloud.com";
 
         Assert.assertEquals(defaultServer, Preferences.defaultServer());
     }

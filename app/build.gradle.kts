@@ -1,12 +1,5 @@
-val hasGoogleServicesJson = rootProject.file("app/google-services.json").exists()
-
 plugins {
     alias(libs.plugins.android.application)
-}
-
-if (hasGoogleServicesJson) {
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
 }
 
 fun getPropertyOrEnv(propertyName: String, envName: String = propertyName): String? {
@@ -20,10 +13,10 @@ fun getPropertyOrEnv(propertyName: String, envName: String = propertyName): Stri
 android {
     signingConfigs {
         create("release") {
-            val storeFile = getPropertyOrEnv("NETBIRD_UPLOAD_STORE_FILE")
-            val storePassword = getPropertyOrEnv("NETBIRD_UPLOAD_STORE_PASSWORD")
-            val keyAlias = getPropertyOrEnv("NETBIRD_UPLOAD_KEY_ALIAS")
-            val keyPassword = getPropertyOrEnv("NETBIRD_UPLOAD_KEY_PASSWORD")
+            val storeFile = getPropertyOrEnv("GOREECLOUD_NETWORK_UPLOAD_STORE_FILE")
+            val storePassword = getPropertyOrEnv("GOREECLOUD_NETWORK_UPLOAD_STORE_PASSWORD")
+            val keyAlias = getPropertyOrEnv("GOREECLOUD_NETWORK_UPLOAD_KEY_ALIAS")
+            val keyPassword = getPropertyOrEnv("GOREECLOUD_NETWORK_UPLOAD_KEY_PASSWORD")
 
             if (storeFile != null) {
                 this.storeFile = file(storeFile)
@@ -34,6 +27,10 @@ android {
         }
     }
 
+    // The inherited namespace/application ID is intentionally retained during
+    // foundation work. Changing it is a release-identity migration that must be
+    // coordinated with GoreeCloud signing, upgrade/coexistence behavior, VPN
+    // permissions, deep links, and real-device testing before release.
     namespace = "io.netbird.client"
     compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
@@ -83,13 +80,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.uiautomator)
     androidTestImplementation(libs.test.rules)
-    implementation(libs.browser)  // Added for CustomTabsIntent
-    implementation(libs.lottie)
+    implementation(libs.browser)
     implementation(libs.zxing)
-
-    if (hasGoogleServicesJson) {
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.crashlytics)
-        implementation(libs.firebase.analytics)
-    }
 }

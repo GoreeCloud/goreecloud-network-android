@@ -1,0 +1,59 @@
+name: GoreeCloud Android Actions smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - "agent/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: goreecloud-android-actions-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
+jobs:
+  actions-smoke:
+    name: Actions activation / source boundary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact source revision
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$SOURCE_SHA" ]]; then
+            echo "Expected Android source revision $SOURCE_SHA but checked out $actual_sha" >&2
+            exit 1
+          fi
+          echo "Verified exact Android source revision: $SOURCE_SHA"
+
+      - name: Validate GoreeCloud Android source boundaries
+        shell: bash
+        run: bash scripts/validate-goreecloud-android.sh
+
+      - name: Record activation evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo '### GoreeCloud Android Actions activation evidence'
+            echo
+            echo "Source revision: \`${SOURCE_SHA}\`"
+            echo
+            echo 'The repository executed a GoreeCloud-owned workflow and passed the source-boundary validator.'
+            echo 'This proves GitHub Actions execution only; it does not prove APK/AAB, unit-test, emulator, signed-artifact, or real-device acceptance.'
+          } >> "$GITHUB_STEP_SUMMARY"

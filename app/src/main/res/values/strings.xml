@@ -114,6 +114,8 @@
     <string name="advanced_theme_desc">Choose the app appearance mode.</string>
     <string name="advanced_force_relay_conn">Force relay connection</string>
     <string name="advanced_force_relay_conn_desc">Uses a relay instead of attempting direct device connectivity. This may reduce performance and is intended primarily for diagnostics or constrained networks.</string>
+    <string name="advanced_obfuscation_mode">Obfuscation Mode</string>
+    <string name="advanced_obfuscation_mode_desc">Requests GoreeCloud Conduit’s padded WebSocket-over-TLS relay transport for restrictive networks. This forces a relay path for the connection, can increase latency and battery use, and is applied after reconnecting. The switch shows the requested configuration; it does not by itself prove that obfuscation is active.</string>
     <string name="exclamation_mark">Warning</string>
     <string name="reconnectionNeededWarningMessage">Reconnect to apply this setting.</string>
     <string name="change_server_setup_key_warning">Setup keys are enrollment credentials. Use a purpose-limited key only when interactive user authentication is not appropriate, and revoke it when it is no longer required.</string>

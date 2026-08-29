@@ -115,7 +115,12 @@
     <string name="advanced_force_relay_conn">Force relay connection</string>
     <string name="advanced_force_relay_conn_desc">Uses a relay instead of attempting direct device connectivity. This may reduce performance and is intended primarily for diagnostics or constrained networks.</string>
     <string name="advanced_obfuscation_mode">Obfuscation Mode</string>
-    <string name="advanced_obfuscation_mode_desc">Requests GoreeCloud Conduit’s padded WebSocket-over-TLS relay transport for restrictive networks. This forces a relay path for the connection, can increase latency and battery use, and is applied after reconnecting. The switch shows the requested configuration; it does not by itself prove that obfuscation is active.</string>
+    <string name="advanced_obfuscation_mode_desc">Requests GoreeCloud Conduit’s padded WebSocket-over-TLS relay transport for restrictive networks. This forces a relay path for the connection, can increase latency and battery use, and is applied after reconnecting. Runtime status is verified separately.</string>
+    <string name="advanced_obfuscation_mode_requested">Requested — Obfuscation Mode is enabled, but the current connection has not yet confirmed the Conduit transport. Reconnect if this setting was just changed.</string>
+    <string name="advanced_obfuscation_mode_negotiating">Negotiating — the dedicated Conduit transport endpoint is connected and GoreeCloud Network is waiting for the authenticated relay handshake.</string>
+    <string name="advanced_obfuscation_mode_active">Active — this connection has confirmed the GoreeCloud Conduit padded WebSocket-over-TLS relay transport.</string>
+    <string name="advanced_obfuscation_mode_unavailable">Unavailable — the endpoint does not offer the required Conduit transport. GoreeCloud Network will not silently downgrade to ordinary relay.</string>
+    <string name="advanced_obfuscation_mode_failed">Failed — the required Conduit transport could not be established. GoreeCloud Network will not silently downgrade to ordinary relay.</string>
     <string name="exclamation_mark">Warning</string>
     <string name="reconnectionNeededWarningMessage">Reconnect to apply this setting.</string>
     <string name="change_server_setup_key_warning">Setup keys are enrollment credentials. Use a purpose-limited key only when interactive user authentication is not appropriate, and revoke it when it is no longer required.</string>

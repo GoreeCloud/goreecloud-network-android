@@ -63,6 +63,27 @@ public class AdvancedFragment extends Fragment {
         });
     }
 
+    private void configureObfuscationModeSwitch(@NonNull ComponentSwitchBinding obfuscationBinding,
+                                                 @NonNull Preferences preferences) {
+        obfuscationBinding.switchTitle.setText(R.string.advanced_obfuscation_mode);
+        obfuscationBinding.switchDescription.setText(R.string.advanced_obfuscation_mode_desc);
+        obfuscationBinding.switchControl.setContentDescription(getString(R.string.advanced_obfuscation_mode));
+        obfuscationBinding.switchControl.setChecked(preferences.isObfuscationModeEnabled());
+        obfuscationBinding.switchControl.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                preferences.enableObfuscationMode();
+            } else {
+                preferences.disableObfuscationMode();
+            }
+
+            showReconnectionNeededWarningDialog();
+        });
+
+        // Keep the whole Glaze UI row keyboard/TV accessible, matching the
+        // other advanced networking controls.
+        obfuscationBinding.getRoot().setOnClickListener(v -> obfuscationBinding.switchControl.toggle());
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -159,6 +180,16 @@ public class AdvancedFragment extends Fragment {
         });
 
         configureForceRelayConnectionSwitch(binding.layoutForceRelayConnection, preferences);
+
+        // Add Obfuscation Mode immediately after Force Relay. It is a request
+        // for the real Conduit padded-WSS transport, not an "active" indicator.
+        ComponentSwitchBinding obfuscationBinding = ComponentSwitchBinding.inflate(
+                inflater,
+                binding.layoutTheme,
+                false
+        );
+        binding.layoutTheme.addView(obfuscationBinding.getRoot(), 0);
+        configureObfuscationModeSwitch(obfuscationBinding, preferences);
 
         // Initialize engine config switches (your settings)
         initializeEngineConfigSwitches();

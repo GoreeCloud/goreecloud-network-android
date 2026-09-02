@@ -21,12 +21,12 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
-        android:banner="@mipmap/ic_banner"
+        android:banner="@drawable/goreecloud_network_banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/goreecloud_network_app_icon"
+        android:label="@string/goreecloud_network_app_name"
+        android:roundIcon="@drawable/goreecloud_network_app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.NetBird"
         tools:targetApi="31">
@@ -48,8 +48,8 @@
         <service
             android:name=".NetbirdTileService"
             android:exported="true"
-            android:icon="@drawable/ic_netbird_tile"
-            android:label="@string/quick_settings_tile_label"
+            android:icon="@drawable/goreecloud_network_tile"
+            android:label="@string/goreecloud_network_quick_settings_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

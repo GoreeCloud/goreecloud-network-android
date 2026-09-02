@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="goreecloud_network_app_name">GoreeCloud Network</string>
+    <string name="goreecloud_network_quick_settings_label">GoreeCloud Network</string>
+    <string name="goreecloud_network_nav_description">GoreeCloud Network</string>
+    <string name="goreecloud_network_first_install_logo_description">GoreeCloud Network logo</string>
+    <string name="goreecloud_network_first_install_text">GoreeCloud Network connects this device to its configured network management service. Use Change Server to select another compatible management service.</string>
+</resources>

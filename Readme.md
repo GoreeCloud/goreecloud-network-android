@@ -1,88 +1,51 @@
-<br/>
-<div align="center">
-<p align="center">
-  <img width="234" src="https://raw.githubusercontent.com/netbirdio/netbird/main/docs/media/logo-full.png"/>
-</p>
-  <p>
-     <a href="https://github.com/netbirdio/netbird/blob/main/LICENSE">
-       <img height="20" src="https://www.gnu.org/graphics/gplv3-88x31.png" />
-     </a>
-    <a href="https://docs.netbird.io/slack-url">
-        <img src="https://img.shields.io/badge/slack-@netbird-red.svg?logo=slack"/>
-     </a>    
-  </p>
-</div>
+# GoreeCloud Network for Android
 
+GoreeCloud Network for Android is the Android client variant of **GoreeCloud Network**. It connects supported Android devices to the Network control plane and compatible WireGuard-based mesh services while preserving the upstream client interfaces required by the underlying implementation.
 
-<p align="center">
-<strong>
-  Start using NetBird at <a href="https://netbird.io/pricing">netbird.io</a>
-  <br/>
-  See <a href="https://netbird.io/docs/">Documentation</a>
-  <br/>
-   Join our <a href="https://docs.netbird.io/slack-url">Slack channel</a>
-  <br/>
+## Upstream foundation
 
-</strong>
-</p>
+This repository is a fork of [`netbirdio/android-client`](https://github.com/netbirdio/android-client). NetBird remains an upstream technology and codebase dependency. Its GPL-3.0 licensing obligations, copyright notices, package/API compatibility identifiers, and required attribution remain intact.
 
-<br>
+Upstream NetBird artwork is not the official identity of GoreeCloud Network. GoreeCloud-controlled Android surfaces use derivatives of the approved GoreeCloud Network identity documented in [`BRANDING.md`](./BRANDING.md).
 
-# NetBird Android client
+## Canonical identity
 
-The NetBird Android client allows connections from mobile devices running Android to private resources in the NetBird network.
+Canonical GoreeCloud Network artwork is maintained in `GoreeCloud/goreecloud-branding-assets` at:
 
-## Screenshots
+`products/network/app-icon.svg`
 
-<p align="center">
-  <img src="https://github.com/netbirdio/android-client/assets/7756831/31fea824-9604-4e6a-a6ed-78cb526b6066" alt="menu" width="250" style="margin-right: 10px;"/>
-  <img src="https://github.com/netbirdio/android-client/assets/7756831/97b3bf1b-6e70-4f25-b5ab-e62b3337f10d" alt="peer-overview" width="250" style="margin-right: 10px;"/>
-  <img src="https://github.com/netbirdio/android-client/assets/7756831/d3ce7c74-aa1e-4be0-ba0c-4761432171e4" alt="mainscreen" width="250"/>
-</p>
+Approved canonical Git blob:
 
-## Install
-You can download and install the app from the Google Play Store:
+`7457cd187d65887189150016b44c28af279635e5`
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=io.netbird.client)
-
+The Android launcher, round icon, navigation mark, first-install mark, Quick Settings service mark, and Android TV banner are platform derivatives of that identity. They do not create a separate Android product identity.
 
 ## Building from source
-### Requirements
-We need the following software:
-* Java 1.11. Usually comes with Android Studio
-* android studio initialized with jdk and emulator (not covered here, is a req from android-client project)
-* gradle (https://gradle.org/install/)
 
-### Prepare development environment
-1. Close all repositories:
-> assuming you use a path like ~/projects locally
+The project currently targets Android API 35 with a minimum supported API level of 26 and Java 11 source compatibility.
+
+Build the Go mobile library first when required by the selected development workflow:
+
 ```shell
-mkdir ~/projects
-cd projects
-# clone netbird repo
-git clone --recurse-submodules git@github.com:netbirdio/android-client.git
-```
-2. Checkout the repositories to the branches you want to test. If you want the latest, check the status information on your IDE or on https://github.com and verify the branch list and commit history.
-3. Export JDK and Android home vars, on macOS they are: (please contribute with Linux equivalent)
-```shell
-# replace <USERNAME> with your name
-export ANDROID_HOME=/Users/<USERNAME>/Library/Android/sdk
-export JAVA_HOME=/Applications/Android Studio.app/Contents/jbr/Contents/Home
-```
-4. Install NDK and CMake
-```shell
-cd ~/projects/android-client
-$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;23.1.7779620"
-```
-### Generate debug bundle
-Follow the steps to run locally until the step 5 then run the following steps:
-1. Build Go agent library
-```shell
-cd ~/projects/android-client
 ./build-android-lib.sh
 ```
-2. Run gradlew
+
+Then build the Android application with Gradle, for example:
+
 ```shell
-cd ~/projects/android-client/android
-./gradlew bundleDebug  -PversionCode=123 -PversionName=1.2.3
+./gradlew bundleDebug -PversionCode=123 -PversionName=1.2.3
 ```
+
+See the repository build files and upstream NetBird Android documentation for implementation-specific toolchain requirements.
+
+## Compatibility boundary
+
+Identifiers such as the `io.netbird.client` namespace/application ID, `NETBIRD_*` signing/configuration properties, NetBird-compatible server terminology, and upstream class names are retained where required for source, runtime, or migration compatibility. Their presence does not establish NetBird artwork or product naming as GoreeCloud's official first-party identity.
+
+## Project status and authority
+
+Branding synchronization, build success, repository contents, or upstream compatibility do not by themselves establish production readiness, runtime acceptance, release acceptance, or Stable status. Those claims remain governed by the applicable GoreeCloud project documentation, standards, policies, and release process.
+
+## License and attribution
+
+This fork retains the upstream **GNU General Public License v3.0 (GPL-3.0)** license in `LICENSE` and preserves required third-party attribution. GoreeCloud-specific branding assets and derivatives remain governed separately by GoreeCloud branding and licensing policy and do not alter upstream code-license obligations.

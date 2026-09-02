@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/fragment_firstinstall_desc_logo"
-            android:src="@drawable/notification_icon"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:contentDescription="@string/goreecloud_network_first_install_logo_description"
+            android:src="@drawable/goreecloud_network_app_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -34,7 +34,7 @@
             android:textAlignment="center"
             android:linksClickable="true"
             android:textColor="@color/nb_txt"
-            android:text="@string/fragment_firstinstall_txt"
+            android:text="@string/goreecloud_network_first_install_text"
             app:layout_constraintTop_toBottomOf="@id/logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
